@@ -1,6 +1,6 @@
 // Variáveis
-// const URLback = "https://fisio-mov-back.vercel.app"
-const URLback = "http://localhost:3000"
+const URLback = "https://fisio-mov-back.vercel.app"
+// const URLback = "http://localhost:3000"
 let userData, allPacients
 let pacientList = document.querySelectorAll('.pacientList')[0]
 let dataAtual = new Date()
