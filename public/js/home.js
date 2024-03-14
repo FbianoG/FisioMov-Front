@@ -1,23 +1,28 @@
 // Variáveis
-const URLback = "http://localhost:3000"
+const URLback = "https://fisio-mov-back.vercel.app"
+
 const accessForm = document.querySelectorAll(".accessForm")[0]
 const formLogin = document.querySelector('#formLogin')
+const formEmail = document.querySelector('#formSendEmail')
 const btnAccessBar = document.querySelectorAll("button")[0]
 const btnRegisterBar = document.querySelectorAll("button")[1]
 const btnHiddenForm = accessForm.querySelectorAll(".btnHidden")[0]
 const btnSubmit = document.querySelector("#acessar")
 
-console.log(btnRegisterBar);
+
 // Eventos
 btnAccessBar.addEventListener("click", showAcessForm)
 btnHiddenForm.addEventListener("click", hiddenAcessForm)
-btnRegisterBar.addEventListener("click", () => window.location.href = "registro.html")
 formLogin.addEventListener('submit', login)
+formEmail.addEventListener('submit', sendEmail)
+btnRegisterBar.addEventListener("click", () => window.location.href = "registro.html")
 
 
 //Funções
 async function login(e) {
 	e.preventDefault()
+	btnSubmit.setAttribute("disabled", "true")
+	btnSubmit.style.opacity = "0.4"
 	const email = document.querySelector('[name="email"]').value
 	const password = document.querySelector('[name="password"]').value
 	const response = await fetch(`${URLback}/login`, {
@@ -28,8 +33,12 @@ async function login(e) {
 	const data = await response.json()
 	if (response.status !== 200) {
 		invalidLogin(data.message)
+		btnSubmit.removeAttribute("disabled")
+		btnSubmit.style.opacity = ""
 		return
 	}
+	btnSubmit.removeAttribute("disabled")
+	btnSubmit.style.opacity = ""
 	localStorage.setItem("Token", data.token)
 	data.patient == false ? window.location.href = "provider.html" : window.location.href = "user.html"
 }
@@ -56,23 +65,10 @@ function invalidLogin(params) {
 	document.querySelector('#alertLogin').textContent = params
 }
 
-
-const formEmail = document.querySelector('#formSendEmail')
-
-formEmail.addEventListener('submit', sendEmail)
-
-
 async function sendEmail(e) {
 	e.preventDefault()
-
-
-	
-
 	const sendEmail = await emailjs.sendForm('service_an5y8sf', 'template_3o8qe56', formEmail)
-	console.log(sendEmail);
-
 }
-
 
 
 // Chamadas
