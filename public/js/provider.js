@@ -1,5 +1,6 @@
 // Variáveis
-const URLback = "https://fisio-mov-back.vercel.app"
+// const URLback = "https://fisio-mov-back.vercel.app"
+const URLback = "http://localhost:3000"
 let userData, allPacients
 let pacientList = document.querySelectorAll('.pacientList')[0]
 let dataAtual = new Date()
@@ -11,37 +12,34 @@ const token = localStorage.getItem("Token")
 if (!token) {
     window.location.href = "index.html"
 }
-
-
-
-
-
 pacientActivity.addEventListener('click', activeAct)
 
 
-
-
 // Funções
-
 async function getUser() { // Get dos dados do usuário
 
 }
 
 async function getPacients() { // Get dos dados de todos os pacientes cadastrados
-
-    const response = await fetch(`${URLback}/getAllUsers`, {
-        method: "POST",
-        body: JSON.stringify({ token }),
-        headers: { "Content-Type": "application/json" }
-    })
-    if (response.status === 401) {
-        window.location.href = "index.html"
+    try {
+        const response = await fetch(`${URLback}/getAllUsers`, {
+            method: "POST",
+            body: JSON.stringify({ token }),
+            headers: { "Content-Type": "application/json" }
+        })
+        if (response.ok) {
+            const data = await response.json();
+            const allPacientsOrdered = data.allPatients.sort((a, b) => a.name.localeCompare(b.name));
+            createCards(allPacientsOrdered);
+        } else if (response.status === 500) {
+            location.href = "error.html"
+        } else {
+            throw new Error("Acesso negado!")
+        }
+    } catch (error) {
+        console.log(error)
+        location.href = "index.html"
     }
-    const data = await response.json()
-
-    const allPacientsOrdered = data.allPatients.sort((a, b) => a.name.localeCompare(b.name)) // Ordena os paciente em ordem alfabética
-    createCards(allPacientsOrdered)  // Cria card de cada paciente cadastrado
-    console.log(allPacientsOrdered)
 }
 
 function createCards(e) { // Cria card de cada paciente cadastrado
@@ -156,14 +154,8 @@ function activeAct(e) { // Habilita ou Desabilita "input das series e repetiçõ
 }
 
 
-
-
-
-
 // Chamadas
-
 getUser() // Get dos dados do usuário
-
 getPacients() // Get dos dados de todos os pacientes cadastrados
 
 

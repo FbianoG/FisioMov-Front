@@ -1,5 +1,6 @@
 // Variáveis
-const URLback = "https://fisio-mov-back.vercel.app"
+// const URLback = "https://fisio-mov-back.vercel.app"
+const URLback = "http://localhost:3000"
 
 const accessForm = document.querySelectorAll(".accessForm")[0]
 const formLogin = document.querySelector('#formLogin')
@@ -15,7 +16,7 @@ btnAccessBar.addEventListener("click", showAcessForm)
 btnHiddenForm.addEventListener("click", hiddenAcessForm)
 formLogin.addEventListener('submit', login)
 formEmail.addEventListener('submit', sendEmail)
-btnRegisterBar.addEventListener("click", () => window.location.href = "registro.html")
+btnRegisterBar.addEventListener("click", () => location.href = "registro.html")
 
 
 //Funções

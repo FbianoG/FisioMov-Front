@@ -1,5 +1,6 @@
 // Variáveis
-const URLback = "https://fisio-mov-back.vercel.app"
+// const URLback = "https://fisio-mov-back.vercel.app"
+const URLback = "http://localhost:3000"
 let userData
 let activityList = document.querySelectorAll(".listActivity")
 let access = document.querySelectorAll('.access')[0]
@@ -19,42 +20,47 @@ btnHiddenAccess.addEventListener('click', hiddenAccess)
 // Funções
 
 async function getUser() { // GET dados do "Usuário"
-
-
-
-
-	const response = await fetch(`${URLback}/getUser`, {
-		method: "POST",
-		body: JSON.stringify({ token }),
-		headers: { "Content-Type": "application/json" }
-	})
-	if (response.status === 401) {
-		window.location.href = "index.html"
+	try {
+		const response = await fetch(`${URLback}/getUser`, {
+			method: "POST",
+			body: JSON.stringify({ token }),
+			headers: { "Content-Type": "application/json" }
+		})
+		if (response.ok) {
+			const data = await response.json()
+			loadingData(data.user)
+		} else if (response.status === 500) {
+			location.href = "error.html"
+		} else {
+			throw new Error()
+		}
+	} catch (error) {
+		console.log(Error);
+		document.querySelector("body").innerHTML = "<h2>Acesso negado!</h2>"
+		setTimeout(() => location.href = "index.html", 5000);
 	}
-	const data = await response.json()
-	console.log(data);
-
-	loadingData(data.user)
 }
 
 async function loadingData(e) { // Gera HTML da página com os dados do "Usuário"
-
-	const response = await fetch(`${URLback}/getAllActivity`, {
-		method: "POST",
-		body: JSON.stringify({ token }),
-		headers: { "Content-Type": "application/json" }
-	})
-
-	if (response.status === 204) {
-		return console.log({ status: 204, menssage: "DataBase não possui atividades cadastradas!" })
+	try {
+		const response = await fetch(`${URLback}/getAllActivity`, {
+			method: "POST",
+			body: JSON.stringify({ token }),
+			headers: { "Content-Type": "application/json" }
+		})
+		if (response.ok) {
+			const data = await response.json()
+			createActivity(data.allAct, e)
+		} else if (response.status === 500) {
+			location.href = "error.html"
+		} else {
+			throw new Error("Acesso não permitido.")
+		}
+	} catch (error) {
+		console.log(Error);
+		document.querySelector("body").innerHTML = "<h2>Acesso negado!</h2>"
+		setTimeout(() => location.href = "index.html", 5000);
 	}
-	const data = await response.json()
-
-	console.log(e);
-	let allActivity = data.allAct
-	// document.querySelectorAll('.content h1')[0].textContent = `Bem vindo, ${e.name.split(" ").slice(0, 2).join(" ")}`
-	// document.querySelectorAll('.perfilHeader img')[0].src = `../uploads/${e.src}`
-	createActivity(data.allAct, e)
 }
 
 function createActivity(atividadeApi, userData) { // Cria e filtra as atividades que foram enviadas ao "Usuário" 
